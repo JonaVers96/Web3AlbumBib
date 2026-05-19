@@ -1,0 +1,38 @@
+{
+  "env": "NODE_ENV",
+  "server": { "port": 9000 },
+
+  "log": {
+    "level": "silly",
+    "disabled": false
+  },
+
+  "cors": {
+    "origins": ["http://localhost:5173", "http://127.0.0.1:5173"],
+    "maxAge": 10800
+  },
+
+  "urls": {
+    "publicBaseUrl": "http://localhost:9000",
+    "frontendBaseUrl": "http://localhost:5173"
+  },
+
+  "mollie": {
+    "apiKey": ""
+  },
+
+  "auth": {
+    "maxDelay": 5000,
+    "argon": {
+      "hashLength": 32,
+      "timeCost": 6,
+      "memoryCost": 131072
+    },
+    "jwt": {
+      "audience": "albums.hogent.be",
+      "issuer": "albums.hogent.be",
+      "expirationInterval": 604800,
+      "secret": "your_jwt_secret"
+    }
+  }
+}

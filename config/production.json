@@ -1,0 +1,10 @@
+{
+  "cors": {
+    "origins": ["https://frontendweb-2425-jonavers96.onrender.com"]
+  },
+  "auth": {
+    "jwt": {
+      "expirationInterval": 604800
+    }
+  }
+}

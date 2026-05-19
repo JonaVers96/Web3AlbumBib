@@ -1,0 +1,14 @@
+{
+  "env": "testing",
+  "port": 0,
+  "log": { "level": "warn", "disabled": true },
+  "auth": {
+    "maxDelay": 0,
+    "jwt": {
+      "audience": "music-api-users",
+      "issuer": "music-api",
+      "secret": "test-secret",
+      "expirationInterval": 1800
+    }
+  }
+}

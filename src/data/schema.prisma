@@ -1,0 +1,100 @@
+datasource db {
+  provider          = "mysql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  admin
+  user
+}
+
+enum PaymentStatus {
+  created
+  open
+  paid
+  failed
+  canceled
+  expired
+}
+
+model User {
+  id           Int    @id @default(autoincrement()) @db.UnsignedInt
+  firstName    String @db.VarChar(255)
+  lastName     String @db.VarChar(255)
+  email        String @unique @db.VarChar(255)
+  passwordHash String
+
+  role Role @default(user)
+
+  // één relation-veld naar de koppeltabel
+  albums   UserAlbum[] @relation("UserAlbums")
+  payments Payment[]
+
+  @@map("users")
+}
+
+model Artist {
+  id    Int     @id @default(autoincrement()) @db.UnsignedInt
+  name  String  @unique @db.VarChar(255)
+  genre String? @db.VarChar(255)
+
+  albums Album[] @relation("ArtistAlbums")
+
+  @@map("artists")
+}
+
+model Album {
+  id            Int      @id @default(autoincrement()) @db.UnsignedInt
+  title         String   @db.VarChar(255)
+  dateReleased  DateTime
+  lengthSeconds Int?
+  trackCount    Int?
+
+  priceCents     Int     @default(0) @map("price_cents")
+  coverImageUrl  String? @map("cover_image_url") @db.VarChar(2048)
+
+  artist   Artist @relation("ArtistAlbums", fields: [artistId], references: [id], onDelete: Cascade)
+  artistId Int    @map("artist_id") @db.UnsignedInt
+
+  owners UserAlbum[] @relation("AlbumOwners")
+
+  @@map("albums")
+}
+
+model Payment {
+  id Int @id @default(autoincrement()) @db.UnsignedInt
+
+  reference       String        @unique @db.VarChar(64)
+  molliePaymentId String?       @map("mollie_payment_id") @db.VarChar(64)
+  status          PaymentStatus @default(created)
+
+  amountCents Int     @map("amount_cents")
+  checkoutUrl String? @map("checkout_url") @db.VarChar(2048)
+  items       Json
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @map("user_id") @db.UnsignedInt
+
+  @@index([userId])
+  @@map("payments")
+}
+
+model UserAlbum {
+  user   User @relation("UserAlbums", fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @map("user_id") @db.UnsignedInt
+
+  album   Album @relation("AlbumOwners", fields: [albumId], references: [id], onDelete: Cascade)
+  albumId Int   @map("album_id") @db.UnsignedInt
+
+  addedAt DateTime @default(now())
+
+  @@id([userId, albumId])
+  @@index([albumId])
+  @@map("user_albums")
+}
