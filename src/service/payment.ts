@@ -168,7 +168,6 @@ export const syncFromMollie = async (molliePaymentId: string) => {
     throw ServiceError.notFound('Payment not found');
   }
 
-  // Dev fallback: treat as paid if no Mollie client
   const mollieClient = getMollieClient();
   if (!mollieClient) {
     if (payment.status !== 'paid') {
@@ -202,5 +201,28 @@ export const syncByReference = async (reference: string) => {
   }
 
   await syncFromMollie(payment.molliePaymentId);
+};
+
+export const getAll = async (query: any, requesterUserId: number, isAdmin: boolean) => {
+  const page = Math.max(1, Number(query.page ?? 1));
+  const pageSize = Math.min(100, Math.max(1, Number(query.pageSize ?? 25)));
+
+  // Als het geen admin is, filter dan op de userId van de requester
+  const where: any = {};
+  if (!isAdmin) {
+    where.userId = requesterUserId;
+  }
+
+  const [total, items] = await Promise.all([
+    prisma.payment.count({ where }),
+    prisma.payment.findMany({
+      where,
+      orderBy: { createdAt: 'desc' }, // Meest recente bestellingen eerst
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+  ]);
+
+  return { items, page, pageSize, total };
 };
 

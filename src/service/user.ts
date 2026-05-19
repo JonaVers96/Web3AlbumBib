@@ -120,9 +120,44 @@ export const register = async (input: RegisterUserRequest): Promise<AuthResponse
   }
 };
 
-export const getAll = async (): Promise<PublicUser[]> => {
-  const users = await prisma.user.findMany();
-  return users.map((u: any) => makeExposedUser(u as any));
+const normalizeUserQuery = (query: any) => {
+  const page = Math.max(1, Number(query.page ?? 1));
+  const pageSize = Math.min(100, Math.max(1, Number(query.pageSize ?? 25)));
+  const q = query.q?.trim() ? query.q.trim() : undefined;
+  return { page, pageSize, q };
+};
+
+const buildWhere = (q?: string) => {
+  if (!q) return {};
+  return {
+    OR: [
+      { firstName: { contains: q } },
+      { lastName: { contains: q } },
+      { email: { contains: q } },
+    ],
+  };
+};
+
+export const getAll = async (query: any) => {
+  const { page, pageSize, q } = normalizeUserQuery(query);
+  const where = buildWhere(q);
+
+  const [total, items] = await Promise.all([
+    prisma.user.count({ where }),
+    prisma.user.findMany({
+      where,
+      orderBy: { firstName: 'asc' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+  ]);
+
+  return {
+    items: items.map((u: any) => makeExposedUser(u as any)),
+    page,
+    pageSize,
+    total,
+  };
 };
 
 export const getById = async (id: number): Promise<PublicUser> => {

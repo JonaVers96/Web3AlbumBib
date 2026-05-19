@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import ServiceError from '../core/serviceError';
 import { prisma } from '../data';
 import type { Artist, ArtistCreateInput, ArtistDetail, ArtistQuery, ArtistUpdateInput } from '../types/artist';
@@ -15,8 +15,8 @@ const buildWhere = (q?: string): Prisma.ArtistWhereInput => {
   if (!q) return {};
   return {
     OR: [
-      { name: { contains: q, mode: 'insensitive' } },
-      { genre: { contains: q, mode: 'insensitive' } },
+      { name: { contains: q } },
+      { genre: { contains: q } },
     ],
   };
 };

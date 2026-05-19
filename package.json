@@ -35,6 +35,7 @@
     "@prisma/client": "^5.19.1",
     "@types/helmet": "^4.0.0",
     "@types/koa-helmet": "^6.0.8",
+    "all": "^0.0.0",
     "argon2": "^0.41.1",
     "config": "^3.3.12",
     "helmet": "^8.1.0",

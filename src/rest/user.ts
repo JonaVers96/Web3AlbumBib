@@ -25,6 +25,12 @@ import type {
   GetUserRequest,
 } from '../types/user';
 
+const querySchema = {
+  page: Joi.number().integer().min(1).default(1),
+  pageSize: Joi.number().integer().min(1).max(100).default(25),
+  q: Joi.string().allow('').optional(),
+};
+
 const registerUser = async (
   ctx: KoaContext<AuthResponse, void, RegisterUserRequest>,
 ) => {
@@ -41,9 +47,11 @@ registerUser.validationScheme = {
 };
 
 const getAllUsers = async (ctx: KoaContext<GetAllUsersResponse>) => {
-  ctx.body = { items: await userService.getAll() };
+  ctx.body = await userService.getAll(ctx.query as any); 
 };
-getAllUsers.validationScheme = null;
+getAllUsers.validationScheme = {
+  query: querySchema,
+};
 
 const getUserById = async (
   ctx: KoaContext<GetUserByIdResponse, GetUserRequest>,

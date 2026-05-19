@@ -14,6 +14,7 @@ import type {
   CreateCheckoutResponse,
   GetPaymentResponse,
 } from '../types/payment';
+import Role from '../core/roles';
 
 const createCheckout = async (
   ctx: KoaContext<CreateCheckoutResponse, void, CreateCheckoutRequest>,
@@ -33,6 +34,21 @@ createCheckout.validationScheme = {
       .required(),
   },
 };
+
+const querySchema = {
+  page: Joi.number().integer().min(1).default(1),
+  pageSize: Joi.number().integer().min(1).max(100).default(25),
+};
+
+const getAllPayments = async (ctx: KoaContext<any>) => {
+  const isAdmin = ctx.state.session!.roles.includes(Role.ADMIN);
+  ctx.body = await paymentService.getAll(
+    ctx.query as any, 
+    ctx.state.session!.userId, 
+    isAdmin,
+  );
+};
+getAllPayments.validationScheme = { query: querySchema };
 
 const getPaymentByReference = async (
   ctx: KoaContext<GetPaymentResponse, { reference: string }>,
@@ -64,6 +80,13 @@ export default (parent: KoaRouter) => {
   const router = new Router<AlbumAppState, AlbumAppContext>({
     prefix: '/payments',
   });
+
+  router.get(
+    '/',
+    requireAuthentication,
+    validate(getAllPayments.validationScheme),
+    getAllPayments,
+  );
 
   router.post(
     '/checkout',
