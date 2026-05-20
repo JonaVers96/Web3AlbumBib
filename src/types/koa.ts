@@ -6,7 +6,7 @@ import type Router from '@koa/router';
 import type { SessionInfo } from './auth';
 
 export interface AlbumAppState {
-  session?: SessionInfo;
+  session?: SessionInfo | undefined;
 }
 
 export interface AlbumAppContext<
@@ -20,12 +20,6 @@ export interface AlbumAppContext<
   };
   params: Params;
 }
-
-/**
- * BELANGRIJK:
- * Gebruik een interface die ParameterizedContext *uitbreidt*.
- * Dit voorkomt “Type 'KoaContext' is not generic”.
- */
 export interface KoaContext<
   ResponseBody = unknown,
   Params = unknown,

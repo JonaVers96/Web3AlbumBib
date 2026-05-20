@@ -1,7 +1,7 @@
 // src/core/auth.ts
 import config from 'config';
-import type Router from '@koa/router';                       // ⬅️ type-only
-import type { AlbumAppState, AlbumAppContext } from '../types/koa';  // ⬅️ type-only
+import type Router from '@koa/router';                      
+import type { AlbumAppState, AlbumAppContext } from '../types/koa';  
 import * as userService from '../service/user';
 
 const AUTH_MAX_DELAY = config.get<number>('auth.maxDelay');

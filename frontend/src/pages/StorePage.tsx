@@ -4,6 +4,7 @@ import * as albumApi from "../api/albums";
 import * as artistApi from "../api/artists";
 import type { Album } from "../types/album";
 import type { Artist } from "../types/artist";
+import { ApiError } from "../api/client";
 
 const StorePage = () => {
   const [q, setQ] = useState("");
@@ -27,6 +28,7 @@ const StorePage = () => {
   }, []);
 
   useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
     setLoading(true);
     setError(null);
     albumApi
@@ -35,9 +37,18 @@ const StorePage = () => {
         setAlbums(res.items);
         setTotal(res.total);
       })
-      .catch((e: any) => setError(e?.body?.message ?? e?.message ?? "Failed to load catalog"))
-      .finally(() => setLoading(false));
-  }, [page, q, artistId]);
+       .catch((e: unknown) => {
+        if (e instanceof ApiError) {
+          setError(e.body?.message ?? e.message ?? "Failed to load catalog");
+        } else if (e instanceof Error) {
+          setError(e.message);
+        } else {
+          setError("Failed to load catalog");
+        }
+      })     .finally(() => setLoading(false));
+  }, 400);
+  return () => clearTimeout(delayDebounceFn);
+},[page, q, artistId]);
 
   const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total]);
 
@@ -102,7 +113,7 @@ const StorePage = () => {
 
       {!loading && !error && albums.length === 0 && (
         <div className="bg-neutral-800 p-6 rounded-lg">
-          <p className="text-neutral-300">Geen albums gevonden.</p>
+          <p className="text-neutral-300">No albums found.</p>
         </div>
       )}
 

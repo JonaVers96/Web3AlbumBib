@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
 import type { PublicUser } from "../types/user";
-import { setToken as persistToken } from "../api/client";
+import { setToken as persistToken, ApiError } from "../api/client"; // ⬅️ ApiError toegevoegd
 import * as userApi from "../api/users";
 
 type AuthState = {
@@ -30,36 +30,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = Boolean(token);
   const isAdmin = user?.role === "admin";
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setToken("");
     setUser(null);
     setError(null);
     setLoading(false);
     persistToken("");
-  };
+  }, []);
 
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     if (!token) return;
     setLoading(true);
     setError(null);
     try {
       const me = await userApi.me();
       setUser(me);
-    } catch (e: any) {
+    } catch { 
       logout();
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, logout]);
 
   useEffect(() => {
     persistToken(token);
     if (!token) return;
     refresh().catch(() => undefined);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [token]);
 
-  const login = async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     setLoading(true);
     setError(null);
     try {
@@ -67,15 +67,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setToken(t);
       setUser(u);
       persistToken(t);
-    } catch (e: any) {
-      setError(e?.body?.message ?? e?.message ?? "Login failed");
+    } catch (e: unknown) {
+      if (e instanceof ApiError) {
+        setError(e.body?.message ?? e.message ?? "Login failed");
+      } else if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("Login failed");
+      }
       throw e;
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const register = async (body: { firstName: string; lastName: string; email: string; password: string }) => {
+  const register = useCallback(async (body: { firstName: string; lastName: string; email: string; password: string }) => {
     setLoading(true);
     setError(null);
     try {
@@ -83,13 +89,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setToken(t);
       setUser(u);
       persistToken(t);
-    } catch (e: any) {
-      setError(e?.body?.message ?? e?.message ?? "Register failed");
+    } catch (e: unknown) { 
+      if (e instanceof ApiError) {
+        setError(e.body?.message ?? e.message ?? "Register failed");
+      } else if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("Register failed");
+      }
       throw e;
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const value = useMemo<AuthContextValue>(
     () => ({
@@ -104,7 +116,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       logout,
       refresh,
     }),
-    [token, user, isAuthenticated, isAdmin, loading, error]
+    [token, user, isAuthenticated, isAdmin, loading, error, login, register, logout, refresh]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

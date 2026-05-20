@@ -2,8 +2,10 @@ import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 const AdminLayout = () => {
-  const { isAdmin } = useAuth();
-
+  const { isAdmin, loading } = useAuth();
+  if (loading) {
+    return <p className="text-neutral-400 p-6">Bezig met laden van admin rechten...</p>;
+  }
   if (!isAdmin) {
     return (
       <div className="bg-neutral-800 p-6 rounded-lg">
