@@ -1,4 +1,4 @@
-import type { Artist, ArtistDetail, GetArtistsResponse } from "../types/artist";
+import type { ArtistDetail, GetArtistsResponse } from "../types/artist";
 import { apiFetch } from "./client";
 
 export const fetchArtists = (params: { page?: number; pageSize?: number; q?: string }) => {
