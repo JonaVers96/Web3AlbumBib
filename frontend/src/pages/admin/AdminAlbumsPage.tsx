@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { Album } from "../../types/album";
 import type { Artist } from "../../types/artist";
-import { formatPrice, resolveImageUrl } from "../../api/client";
+import { formatPrice, resolveImageUrl, ApiError } from "../../api/client"; // ⬅️ ApiError toegevoegd
 import * as albumApi from "../../api/albums";
 import * as artistApi from "../../api/artists";
 import * as uploadApi from "../../api/uploads";
@@ -61,8 +61,14 @@ const AdminAlbumsPage = () => {
       const res = await albumApi.fetchAdminAlbums({ page, pageSize, q: q.trim() || undefined, artistId });
       setAlbums(res.items);
       setTotal(res.total);
-    } catch (e: any) {
-      setError(e?.body?.message ?? e?.message ?? "Failed to load albums");
+    } catch (e: unknown) { // ⬅️ any vervangen door unknown
+      if (e instanceof ApiError) {
+        setError(e.body?.message ?? e.message ?? "Failed to load albums");
+      } else if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("Failed to load albums");
+      }
     } finally {
       setLoading(false);
     }
@@ -79,6 +85,7 @@ const AdminAlbumsPage = () => {
 
   const startCreate = () => {
     setEditing(null);
+    setError(null); // Zorg dat oude errors weggaan als we iets nieuws starten
     reset({
       title: "",
       artistId: artists[0]?.id ?? 0,
@@ -92,6 +99,7 @@ const AdminAlbumsPage = () => {
 
   const startEdit = (a: Album) => {
     setEditing(a);
+    setError(null); // Zorg dat oude errors weggaan
     reset({
       title: a.title,
       artistId: a.artist.id,
@@ -105,49 +113,77 @@ const AdminAlbumsPage = () => {
   };
 
   const onSubmit = async (values: AlbumForm) => {
-    const body = {
-      title: values.title,
-      artistId: Number(values.artistId),
-      dateReleased: new Date(values.dateReleased).toISOString(),
-      trackCount: values.trackCount === null ? null : Number(values.trackCount),
-      lengthSeconds: values.lengthSeconds === null ? null : Number(values.lengthSeconds),
-      priceCents: Number(values.priceCents),
-      coverImageUrl: values.coverImageUrl,
-    };
+    setError(null);
+    try {
+      const body = {
+        title: values.title,
+        artistId: Number(values.artistId),
+        dateReleased: new Date(values.dateReleased).toISOString(),
+        trackCount: values.trackCount === null ? null : Number(values.trackCount),
+        lengthSeconds: values.lengthSeconds === null ? null : Number(values.lengthSeconds),
+        priceCents: Number(values.priceCents),
+        coverImageUrl: values.coverImageUrl,
+      };
 
-    if (editing) {
-      await albumApi.updateAlbum(editing.id, body);
-    } else {
-      await albumApi.createAlbum(body);
+      if (editing) {
+        await albumApi.updateAlbum(editing.id, body);
+      } else {
+        await albumApi.createAlbum(body);
+      }
+
+      await loadAlbums();
+      startCreate();
+    } catch (e: unknown) { 
+      if (e instanceof ApiError) {
+        setError(e.body?.message ?? e.message ?? "Failed to save album");
+      } else if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("Failed to save album");
+      }
     }
-
-    await loadAlbums();
-    startCreate();
   };
 
   const doDelete = async (id: number) => {
-    if (!confirm("Delete this album?")) return;
-    await albumApi.deleteAlbum(id);
-    await loadAlbums();
+    if (!window.confirm("Delete this album?")) return;
+    setError(null);
+    try {
+      await albumApi.deleteAlbum(id);
+      await loadAlbums();
+    } catch (e: unknown) { 
+      if (e instanceof ApiError) {
+        setError(e.body?.message ?? e.message ?? "Failed to delete album");
+      } else {
+        setError("Failed to delete album");
+      }
+    }
   };
 
   const doExport = async () => {
-    const csv = await albumApi.exportAlbumsCsv();
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "albums.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+    setError(null);
+    try {
+      const csv = await albumApi.exportAlbumsCsv();
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "albums.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch { 
+      setError("Failed to export CSV");
+    }
   };
 
   const handleCoverFile = async (file: File | null) => {
     if (!file) return;
     setUploading(true);
+    setError(null);
     try {
       const res = await uploadApi.uploadAlbumCover(file);
       setValue("coverImageUrl", res.url);
+    } catch { 
+      setError("Failed to upload image");
     } finally {
       setUploading(false);
     }

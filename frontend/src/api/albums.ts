@@ -4,7 +4,7 @@ import type {
   GetCatalogAlbumsResponse,
   GetOwnedAlbumsResponse,
 } from "../types/album";
-import { apiFetch } from "./client";
+import { apiFetch, API_URL, getToken } from "./client";
 
 export const fetchCatalogAlbums = (params: {
   page?: number;
@@ -18,7 +18,7 @@ export const fetchCatalogAlbums = (params: {
   if (params.q) qs.set("q", params.q);
   if (params.artistId) qs.set("artistId", String(params.artistId));
   return apiFetch<GetCatalogAlbumsResponse>(`/albums/catalog?${qs.toString()}`, {
-    auth: true, // optional auth supported; if no token it is ignored by backend
+    auth: true, 
   });
 };
 
@@ -73,4 +73,29 @@ export const exportAlbumsCsv = async () => {
     raw: true,
   });
   return res.text();
+};
+
+export const exportCatalogCsv = async (): Promise<void> => {
+  const response = await fetch(`${API_URL}/albums/admin/export`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Het exporteren is mislukt");
+  }
+
+  const blob = await response.blob();
+  
+  const downloadUrl = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = downloadUrl;
+  link.download = "albums.csv"; // De naam van het bestand
+  document.body.appendChild(link);
+  link.click();
+
+    document.body.removeChild(link);
+  window.URL.revokeObjectURL(downloadUrl);
 };
