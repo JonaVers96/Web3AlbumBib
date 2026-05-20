@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es2022",                               /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
     "module": "commonjs",                             /* Specify what module code is generated. */
+    "skipLibCheck": true,
     "resolveJsonModule": true,                        /* Enable importing .json files. */
     "rootDir": "./src",
     "outDir": "./build",                              /* Specify an output folder for all emitted files. */
