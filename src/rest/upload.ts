@@ -1,5 +1,4 @@
 import Router from '@koa/router';
-import Joi from 'joi';
 import multer from '@koa/multer';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -27,7 +26,7 @@ const upload = multer({
   fileFilter: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     if (file.mimetype !== 'image/jpeg' || (ext !== '.jpg' && ext !== '.jpeg')) {
-      return cb(ServiceError.validationFailed('Only JPEG (.jpg/.jpeg) files are allowed'));
+      return cb(ServiceError.validationFailed('Only JPEG (.jpg/.jpeg) files are allowed') as any, false);
     }
     cb(null, true);
   },
@@ -57,7 +56,7 @@ export default (parent: KoaRouter) => {
     '/album-cover',
     requireAuthentication,
     requireAdmin,
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+     
     upload.single('file'),
     validate(uploadCover.validationScheme),
     uploadCover,
