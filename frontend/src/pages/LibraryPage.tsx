@@ -3,34 +3,56 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import * as albumApi from "../api/albums";
 import type { Album } from "../types/album";
-import { resolveImageUrl } from "../api/client";
+import { resolveImageUrl, ApiError } from "../api/client";
 
 const LibraryPage = () => {
   const { isAuthenticated } = useAuth();
   const [items, setItems] = useState<Album[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const load = async () => {
+const load = async () => {
     setLoading(true);
     setError(null);
     try {
       const res = await albumApi.fetchOwnedAlbums();
       setItems(res.items);
-    } catch (e: any) {
-      setError(e?.body?.message ?? e?.message ?? "Failed to load library");
+    } catch (e: unknown) {
+      if (e instanceof ApiError) {
+        setError(e.body?.message ?? e.message ?? "Failed to load library");
+      } else if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("Failed to load library");
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  const handleRemove = async (albumId: number) => {
+    if (!window.confirm("Weet je zeker dat je dit album uit je library wilt verwijderen?")) return;
+    
+    setError(null);
+    try {
+      await albumApi.removeOwnedAlbum(albumId);
+      await load(); 
+    } catch (e: unknown) {
+      if (e instanceof ApiError) {
+        setError(e.body?.message ?? e.message ?? "Kon album niet verwijderen");
+      } else if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("Kon album niet verwijderen");
+      }
+    }
+  };
   useEffect(() => {
     if (!isAuthenticated) {
       setLoading(false);
       return;
     }
     load().catch(() => undefined);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [isAuthenticated]);
 
   if (!isAuthenticated) {
@@ -78,13 +100,22 @@ const LibraryPage = () => {
                 <img src={resolveImageUrl(a.coverImageUrl)} alt={a.title} className="w-full h-full object-cover" />
               ) : null}
             </div>
-            <div className="flex-1">
+           <div className="flex-1">
               <p className="font-semibold">{a.title}</p>
               <p className="text-sm text-neutral-400">{a.artist?.name}</p>
             </div>
-            <Link to={`/albums/${a.id}`} className="text-green-500 underline">
-              View
-            </Link>
+            
+            <div className="flex items-center gap-4">
+              <Link to={`/albums/${a.id}`} className="text-green-500 underline hover:text-green-400">
+                View
+              </Link>
+              <button 
+                onClick={() => handleRemove(a.id)} 
+                className="text-red-500 underline hover:text-red-400"
+              >
+                Remove
+              </button>
+            </div>
           </div>
         ))}
       </div>
