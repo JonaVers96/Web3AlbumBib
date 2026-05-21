@@ -25,7 +25,7 @@ export const register = (body: {
 export const me = () => apiFetch<PublicUser>(`/users/me`, { auth: true });
 
 export const fetchUsers = () =>
-  apiFetch<{ items: PublicUser[] }>(`/users`, { auth: true });
+  apiFetch<{ items: PublicUser[] }>(`/users?page=1&pageSize=100`, { auth: true });
 
 export const updateUserRole = (id: number, role: Role) =>
   apiFetch<PublicUser>(`/users/${id}/role`, {

@@ -3,6 +3,7 @@ import type {
   GetAdminAlbumsResponse,
   GetCatalogAlbumsResponse,
   GetOwnedAlbumsResponse,
+  SaveAlbumRequest,
 } from "../types/album";
 import { apiFetch, API_URL, getToken } from "./client";
 
@@ -47,7 +48,7 @@ export const fetchAdminAlbums = (params: {
   });
 };
 
-export const createAlbum = (body: any) =>
+export const createAlbum = (body: SaveAlbumRequest) =>
   apiFetch<Album>(`/albums`, {
     method: "POST",
     auth: true,
@@ -55,7 +56,7 @@ export const createAlbum = (body: any) =>
     body: JSON.stringify(body),
   });
 
-export const updateAlbum = (id: number, body: any) =>
+export const updateAlbum = (id: number, body: SaveAlbumRequest) =>
   apiFetch<Album>(`/albums/${id}`, {
     method: "PUT",
     auth: true,
