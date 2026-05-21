@@ -50,8 +50,12 @@ const AdminAlbumsPage = () => {
   const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total]);
 
   const loadArtists = async () => {
-    const res = await artistApi.fetchArtists({ page: 1, pageSize: 200 });
-    setArtists(res.items);
+    try {
+      const res = await artistApi.fetchArtists({ page: 1, pageSize: 100 }); 
+      setArtists(res.items);
+    } catch (e) {
+      console.error("Fout bij het laden van artiesten:", e); 
+    }
   };
 
   const loadAlbums = async () => {
@@ -75,7 +79,7 @@ const AdminAlbumsPage = () => {
   };
 
   useEffect(() => {
-    loadArtists().catch(() => undefined);
+    loadArtists();
   }, []);
 
   useEffect(() => {
