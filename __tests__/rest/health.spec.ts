@@ -2,7 +2,6 @@ import supertest from 'supertest';
 import createServer from '../../src/createServer';
 import type { Server } from '../../src/createServer';
 import packageJson from '../../package.json';
-import { prisma } from '../../src/data';
 
 describe('Health', () => {
 
@@ -12,8 +11,6 @@ describe('Health', () => {
   beforeAll(async () => {
     server = await createServer();
     request = supertest(server.getApp().callback());
-    await prisma.album.deleteMany({});
-    await prisma.artist.deleteMany({});
   });
 
   afterAll(async () => {

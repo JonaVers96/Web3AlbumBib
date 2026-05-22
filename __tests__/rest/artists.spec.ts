@@ -13,6 +13,7 @@ const data = {
       dateReleased: new Date(1997, 4, 21, 20, 0), // 1997-05-21 20:00 lokaal
       lengthSeconds: 3450,
       trackCount: 13,
+      priceCents: 1599,
     },
     {
       id: 2,
@@ -21,6 +22,7 @@ const data = {
       dateReleased: new Date(2007, 9, 10, 20, 0), // 2007-10-10 20:00 lokaal
       lengthSeconds: 4530,
       trackCount: 10,
+      priceCents: 1599,
     },
     {
       id: 3,
@@ -29,6 +31,7 @@ const data = {
       dateReleased: new Date(2022, 6, 29, 20, 0), // 2022-07-29 20:00 lokaal
       lengthSeconds: 3600, 
       trackCount: 16,
+      priceCents: 1599,
     },
   ],
   artists: [
@@ -125,6 +128,7 @@ describe('Artists', () => {
         id: 1,
         name: 'Radiohead',
         genre: 'Alternative',
+        priceCents: 1599,
         albums: [],
       });
     });
@@ -264,7 +268,7 @@ describe('Artists', () => {
       const response = await request
         .put(`${url}/2`)
         .send({
-          name: 'Changed name', // bestaat nu al op id:1
+          name: 'Changed name',
           genre: 'Pop/R&B',
         })
         .set('Authorization', authHeader);

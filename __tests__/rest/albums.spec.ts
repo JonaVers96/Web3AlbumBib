@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import type supertest from 'supertest';
 import { prisma } from '../../src/data';
 import withServer from '../helpers/withServer';
@@ -13,6 +15,7 @@ const data = {
       dateReleased: new Date(1997, 4, 21, 19, 40), // 1997-05-21T17:40:00.000Z (afh. TZ)
       trackCount: 12,
       lengthSeconds: 3000,
+      priceCents: 1599,
     },
     {
       id: 2,
@@ -21,6 +24,7 @@ const data = {
       dateReleased: new Date(2022, 6, 29, 20, 0),
       trackCount: 16,
       lengthSeconds: 2400,
+      priceCents: 1599,
     },
     {
       id: 3,
@@ -29,6 +33,7 @@ const data = {
       dateReleased: new Date(2007, 9, 10, 14, 30),
       trackCount: 10,
       lengthSeconds: 3600,
+      priceCents: 1599,
     },
   ],
   artists: [
@@ -127,6 +132,7 @@ describe('Albums', () => {
         dateReleased: new Date(1997, 4, 21, 19, 40).toJSON(),
         trackCount: 12,
         lengthSeconds: 3000,
+        priceCents: 1599,
       });
     });
 
@@ -173,6 +179,7 @@ describe('Albums', () => {
           title: 'Lemonade',
           dateReleased: '2016-04-23T00:00:00.000Z',
           artistId: 2,
+          priceCents: 1599,
         })
         .set('Authorization', authHeader);
 
@@ -196,6 +203,7 @@ describe('Albums', () => {
           title: 'Ghost Album',
           dateReleased: '2020-01-01T00:00:00.000Z',
           artistId: 123,
+          priceCents: 1599,
         })
         .set('Authorization', authHeader);
 

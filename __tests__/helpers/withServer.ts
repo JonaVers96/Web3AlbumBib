@@ -1,3 +1,4 @@
+import { beforeAll, afterAll } from '@jest/globals';
 import supertest from 'supertest';
 import type { Server } from '../../src/createServer';
 import createServer from '../../src/createServer';
@@ -5,7 +6,6 @@ import { prisma } from '../../src/data';
 import { hashPassword } from '../../src/core/password';
 
 async function truncateAll() {
-  // FK checks uit/aan is niet nodig met cascades, maar kan op MySQL:
   await prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 0');
   await prisma.$executeRawUnsafe('TRUNCATE TABLE user_albums');
   await prisma.$executeRawUnsafe('TRUNCATE TABLE albums');
@@ -21,7 +21,7 @@ export default function withServer(setter: (s: supertest.Agent) => void): void {
     await truncateAll();
     server = await createServer();
 
-    // Users
+    // 1. Users aanmaken
     const passwordHash = await hashPassword('12345678');
     await prisma.user.createMany({
       data: [
@@ -38,11 +38,11 @@ export default function withServer(setter: (s: supertest.Agent) => void): void {
           lastName: 'User',
           email: 'admin.user@hogent.be',
           passwordHash,
+          role: 'admin',
         },
       ],
     });
 
-    // Artists
     await prisma.artist.createMany({
       data: [
         { id: 1, name: 'Radiohead', genre: 'Alternative' },
@@ -50,7 +50,6 @@ export default function withServer(setter: (s: supertest.Agent) => void): void {
       ],
     });
 
-    // Albums
     await prisma.album.createMany({
       data: [
         {
@@ -80,7 +79,6 @@ export default function withServer(setter: (s: supertest.Agent) => void): void {
       ],
     });
 
-    // (optioneel) user_albums link
     await prisma.userAlbum.createMany({
       data: [
         { userId: 1, albumId: 1, addedAt: new Date() },
@@ -92,7 +90,6 @@ export default function withServer(setter: (s: supertest.Agent) => void): void {
   });
 
   afterAll(async () => {
-    // volg FK-volgorde
     await prisma.userAlbum.deleteMany();
     await prisma.album.deleteMany();
     await prisma.artist.deleteMany();

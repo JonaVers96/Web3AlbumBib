@@ -1,3 +1,4 @@
+import { it, expect } from '@jest/globals';
 import type supertest from 'supertest';
 
 export default function testAuthHeader(requestFactory: () => supertest.Test): void {

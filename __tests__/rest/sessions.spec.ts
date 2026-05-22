@@ -1,41 +1,18 @@
 import type { Agent } from 'supertest';
-import { prisma } from '../../src/data';
 import withServer from '../helpers/withServer';
-import { hashPassword } from '../../src/core/password';
 
 describe('Sessions', () => {
-
   let supertest: Agent;
 
   withServer((s) => supertest = s);
 
   describe('POST /api/sessions', () => {
-
     const url = '/api/sessions';
-
-    beforeAll(async () => {
-      const passwordHash = await hashPassword('12345678');
-      await prisma.album.deleteMany({});
-      await prisma.artist.deleteMany({});
-      await prisma.user.create({
-        data: {
-          id: 3,
-          firstName: 'Login',
-          lastName: 'User',
-          email: 'login@hogent.be',
-          passwordHash: passwordHash,
-        },
-      });
-    });
-
-    afterAll(async () => {
-      await prisma.user.delete({ where: { id: 3 } });
-    });
 
     it('should 200 and return the token when succesfully logged in', async () => {
       const response = await supertest.post(url)
         .send({
-          email: 'login@hogent.be',
+          email: 'test.user@hogent.be',
           password: '12345678',
         });
 
@@ -47,7 +24,7 @@ describe('Sessions', () => {
       const response = await supertest.post(url)
         .send({
           email: 'invalid@hogent.be',
-          password: '12345678910112',
+          password: '12345678',
         });
 
       expect(response.statusCode).toBe(401);
@@ -61,7 +38,7 @@ describe('Sessions', () => {
     it('should 401 with wrong password', async () => {
       const response = await supertest.post(url)
         .send({
-          email: 'login@hogent.be',
+          email: 'test.user@hogent.be',
           password: 'invalidpassword',
         });
 
@@ -87,7 +64,7 @@ describe('Sessions', () => {
 
     it('should 400 when no password given', async () => {
       const response = await supertest.post(url)
-        .send({ email: 'login@hogent.be' });
+        .send({ email: 'test.user@hogent.be' });
 
       expect(response.statusCode).toBe(400);
       expect(response.body.code).toBe('VALIDATION_FAILED');

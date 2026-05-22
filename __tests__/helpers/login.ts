@@ -7,7 +7,7 @@ export const login = async (supertest: supertest.Agent): Promise<string> => {
   });
 
   if (response.statusCode !== 200) {
-    throw new Error(response.body.message || 'Unknown error occured');
+    throw new Error(response.body.message || 'Unknown error occurred');
   }
 
   return `Bearer ${response.body.token}`;

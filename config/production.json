@@ -1,6 +1,6 @@
 {
   "cors": {
-    "origins": ["https://frontendweb-2425-jonavers96.onrender.com"]
+    "origins": ["https://web3albumbib.onrender.com"]
   },
   "auth": {
     "jwt": {

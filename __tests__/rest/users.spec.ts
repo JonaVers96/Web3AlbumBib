@@ -11,8 +11,6 @@ describe('Users', () => {
   withServer((r) => (request = r));
 
   beforeAll(async () => {
-    await prisma.album.deleteMany({});
-    await prisma.artist.deleteMany({});
     authHeader = await login(request);
   });
 
@@ -29,7 +27,6 @@ describe('Users', () => {
       });
     });
 
-    // zonder token → 401
     testAuthHeader(() => request.get(url));
   });
 
@@ -75,7 +72,7 @@ describe('Users', () => {
       expect(response.statusCode).toBe(403);
       expect(response.body).toMatchObject({
         code: 'FORBIDDEN',
-        message: 'You are not allowed to view this user\'s information',
+        message: 'Forbidden',
       });
     });
 
@@ -146,7 +143,7 @@ describe('Users', () => {
       expect(response.statusCode).toBe(403);
       expect(response.body).toMatchObject({
         code: 'FORBIDDEN',
-        message: 'You are not allowed to view this user\'s information',
+        message: 'Forbidden',
       });
     });
 
@@ -167,7 +164,7 @@ describe('Users', () => {
       expect(response.statusCode).toBe(403);
       expect(response.body).toMatchObject({
         code: 'FORBIDDEN',
-        message: 'You are not allowed to view this user\'s information',
+        message: 'Forbidden',
       });
     });
 
