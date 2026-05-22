@@ -64,7 +64,6 @@ export const apiFetch = async <T>(
 export const resolveImageUrl = (coverImageUrl?: string | null) => {
   if (!coverImageUrl) return "";
   if (coverImageUrl.startsWith("http")) return coverImageUrl;
-  // covers come from /uploads (not /api)
   return `${BACKEND_URL}${coverImageUrl}`;
 };
 

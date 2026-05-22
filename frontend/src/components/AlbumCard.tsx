@@ -4,8 +4,10 @@ import { formatPrice, resolveImageUrl } from "../api/client";
 import { useCart } from "../contexts/CartContext";
 
 const AlbumCard = ({ album }: { album: Album }) => {
-  const { add } = useCart();
+  const { add, isInCart } = useCart();
   const cover = resolveImageUrl(album.coverImageUrl);
+
+  const alreadyInCart = isInCart(album.id);
 
   return (
     <div className="bg-neutral-800 p-4 rounded-lg flex flex-col items-center hover:bg-neutral-700 transition duration-200">
@@ -30,10 +32,16 @@ const AlbumCard = ({ album }: { album: Album }) => {
         {album.isOwned ? (
           <span className="text-green-500 font-semibold">Owned</span>
         ) : (
-          <button
+<button
             onClick={() => add(album)}
-            className="bg-green-600 hover:bg-green-500 text-neutral-900 font-bold px-4 py-2 rounded-lg transition">
-            Add
+            disabled={alreadyInCart}
+            className={`px-4 py-2 rounded-lg font-medium transition ${
+              alreadyInCart 
+                ? "bg-green-600/50 text-green-200 cursor-not-allowed" 
+                : "bg-blue-600 hover:bg-blue-500 text-white"          
+            }`}
+          >
+            {alreadyInCart ? "In cart" : "Add"}
           </button>
         )}
       </div>

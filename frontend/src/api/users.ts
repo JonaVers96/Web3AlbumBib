@@ -1,4 +1,4 @@
-import type { AuthResponse, PublicUser, Role } from "../types/user";
+import type { AuthResponse, PublicUser, RegisterRequest, Role } from "../types/user";
 import { apiFetch } from "./client";
 
 export const login = (email: string, password: string) =>
@@ -9,12 +9,7 @@ export const login = (email: string, password: string) =>
     body: JSON.stringify({ email, password }),
   });
 
-export const register = (body: {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-}) =>
+export const register = (body: RegisterRequest) =>
   apiFetch<AuthResponse>(`/users`, {
     method: "POST",
     auth: false,

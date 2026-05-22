@@ -1,4 +1,4 @@
-import type { ArtistDetail, GetArtistsResponse } from "../types/artist";
+import type { ArtistDetail, GetArtistsResponse, SaveArtistRequest } from "../types/artist";
 import { apiFetch } from "./client";
 
 export const fetchArtists = (params: { page?: number; pageSize?: number; q?: string }) => {
@@ -12,7 +12,7 @@ export const fetchArtists = (params: { page?: number; pageSize?: number; q?: str
 export const fetchArtistById = (id: number) =>
   apiFetch<ArtistDetail>(`/artists/${id}`, { auth: false });
 
-export const createArtist = (body: { name: string; genre?: string | null }) =>
+export const createArtist = (body: SaveArtistRequest) =>
   apiFetch<ArtistDetail>(`/artists`, {
     method: "POST",
     auth: true,
@@ -20,7 +20,7 @@ export const createArtist = (body: { name: string; genre?: string | null }) =>
     body: JSON.stringify(body),
   });
 
-export const updateArtist = (id: number, body: { name: string; genre?: string | null }) =>
+export const updateArtist = (id: number, body: SaveArtistRequest) =>
   apiFetch<ArtistDetail>(`/artists/${id}`, {
     method: "PUT",
     auth: true,
@@ -30,3 +30,5 @@ export const updateArtist = (id: number, body: { name: string; genre?: string | 
 
 export const deleteArtist = (id: number) =>
   apiFetch<void>(`/artists/${id}`, { method: "DELETE", auth: true });
+
+

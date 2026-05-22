@@ -9,4 +9,9 @@ export interface ArtistDetail extends Artist {
   albumCount: number;
 }
 
+export interface SaveArtistRequest {
+  name: string;
+  genre?: string | null;
+}
+
 export type GetArtistsResponse = PaginatedListResponse<Artist>;

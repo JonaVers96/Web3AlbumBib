@@ -8,8 +8,13 @@ export interface PublicUser extends Entity {
   email: string;
   role: Role;
 }
-
 export interface AuthResponse {
   token: string;
   user: PublicUser;
+}
+export interface RegisterRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
 }
