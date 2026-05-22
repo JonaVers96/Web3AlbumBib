@@ -20,7 +20,7 @@ const AlbumCard = ({ album }: { album: Album }) => {
             <img src={cover} alt={album.title} className="rounded-lg max-h-52 object-cover" />
           ) : (
             <div className="rounded-lg bg-neutral-900 w-full h-52 flex items-center justify-center text-neutral-500">
-              No cover
+              Geen cover
             </div>
           )}
         </div>

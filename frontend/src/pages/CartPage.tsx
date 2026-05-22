@@ -40,7 +40,7 @@ const CartPage = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-3xl font-bold">Cart</h1>
+      <h1 className="text-3xl font-bold">Winkelmandje</h1>
 
       {items.length === 0 ? (
         <div className="bg-neutral-800 p-6 rounded-lg">
