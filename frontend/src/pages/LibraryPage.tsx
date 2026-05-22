@@ -61,7 +61,7 @@ const load = async () => {
         <h1 className="text-3xl font-bold mb-2">Library</h1>
         <p className="text-neutral-300">Login om je aangekochte albums te zien.</p>
         <Link to="/login?next=/library" className="text-green-500 underline">
-          Login
+          Inloggen
         </Link>
       </div>
     );
@@ -72,7 +72,7 @@ const load = async () => {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Bibliotheek</h1>
         <button onClick={load} className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg">
-          Refresh
+          Herladen
         </button>
       </div>
 

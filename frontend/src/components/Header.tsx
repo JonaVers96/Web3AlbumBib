@@ -49,13 +49,13 @@ const Header = () => {
 
         {!isAuthenticated ? (
           <NavLink to={"/login"} className={linkClass}>
-            Log in
+            Inloggen
           </NavLink>
         ) : (
           <button
             onClick={logout}
             className="font-semibold text-lg px-4 py-2 rounded-lg text-neutral-50 hover:text-green-500">
-            Log uit ({user?.firstName})
+            Uitloggen ({user?.firstName})
           </button>
         )}
       </div>

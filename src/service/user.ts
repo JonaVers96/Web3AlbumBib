@@ -77,12 +77,12 @@ export const checkRole = (role: string, roles: string[]): void => {
 export const login = async (email: string, password: string): Promise<AuthResponse> => {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    throw ServiceError.unauthorized('The given email and password do not match');
+    throw ServiceError.unauthorized('Email adres en wachtwoord komen niet overeen');
   }
 
   const passwordValid = await verifyPassword(password, (user as any).passwordHash);
   if (!passwordValid) {
-    throw ServiceError.unauthorized('The given email and password do not match');
+    throw ServiceError.unauthorized('Email adres en wachtwoord komen niet overeen');
   }
 
   const token = await generateJWT(user as any);

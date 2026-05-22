@@ -30,7 +30,7 @@ describe('Sessions', () => {
       expect(response.statusCode).toBe(401);
       expect(response.body).toMatchObject({
         code: 'UNAUTHORIZED',
-        message: 'The given email and password do not match',
+        message: 'Email adres en wachtwoord komen niet overeen',
       });
       expect(response.body.stack).toBeTruthy();
     });
@@ -45,7 +45,7 @@ describe('Sessions', () => {
       expect(response.statusCode).toBe(401);
       expect(response.body).toMatchObject({
         code: 'UNAUTHORIZED',
-        message: 'The given email and password do not match',
+        message: 'Email adres en wachtwoord komen niet overeen',
       });
       expect(response.body.stack).toBeTruthy();
     });

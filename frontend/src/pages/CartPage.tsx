@@ -94,14 +94,14 @@ const CartPage = () => {
                 disabled={loading}
                 className="bg-green-600 hover:bg-green-500 text-neutral-900 font-bold px-6 py-3 rounded-lg transition disabled:opacity-50"
               >
-                {loading ? "Omleiding…" : "Checkout (Mollie)"}
+                {loading ? "Omleiding…" : "Betalen (Mollie)"}
               </button>
             </div>
           </div>
 
           {!isAuthenticated && (
             <p className="text-neutral-400">
-              Je moet inloggen om af te rekenen. <Link to="/login" className="text-green-500 underline">Login</Link>
+              Je moet inloggen om af te rekenen. <Link to="/login" className="text-green-500 underline">Inloggen</Link>
             </p>
           )}
         </>

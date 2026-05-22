@@ -99,7 +99,7 @@ export const createCheckout = async (userId: number, albumIds: number[]) => {
         currency: 'EUR',
         value: formatEur(amountCents),
       },
-      description: `Webify checkout (${reference})`,
+      description: `Album checkout (${reference})`,
       redirectUrl: `${FRONTEND_BASE_URL}/payment/return?reference=${reference}`,
       webhookUrl: `${PUBLIC_BASE_URL}/api/webhooks/mollie`,
       metadata: { reference, userId },

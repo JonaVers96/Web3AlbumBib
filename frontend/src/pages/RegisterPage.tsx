@@ -65,7 +65,7 @@ const RegisterPage = () => {
       <p className="text-neutral-400 mt-4">
         Heb je al een account?{" "}
         <Link to={`/login?next=${encodeURIComponent(next)}`} className="text-green-500 underline">
-          Login
+          inlogggen
         </Link>
       </p>
     </div>
