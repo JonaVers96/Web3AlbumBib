@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
 import type { PublicUser } from "../types/user";
-import { setToken as persistToken, ApiError } from "../api/client"; // ⬅️ ApiError toegevoegd
+import { setToken as persistToken, ApiError } from "../api/client";
 import * as userApi from "../api/users";
 
 type AuthState = {
@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!token) return;
     refresh().catch(() => undefined);
     
-  }, [token]);
+  }, [refresh, token]);
 
   const login = useCallback(async (email: string, password: string) => {
     setLoading(true);
@@ -69,11 +69,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       persistToken(t);
     } catch (e: unknown) {
       if (e instanceof ApiError) {
-        setError(e.body?.message ?? e.message ?? "Login failed");
+        setError(e.body?.message ?? e.message ?? "Login niet gelukt");
       } else if (e instanceof Error) {
         setError(e.message);
       } else {
-        setError("Login failed");
+        setError("Login niet gelukt");
       }
       throw e;
     } finally {
@@ -91,11 +91,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       persistToken(t);
     } catch (e: unknown) { 
       if (e instanceof ApiError) {
-        setError(e.body?.message ?? e.message ?? "Register failed");
+        setError(e.body?.message ?? e.message ?? "Registreren niet gelukt");
       } else if (e instanceof Error) {
         setError(e.message);
       } else {
-        setError("Register failed");
+        setError("Registreren niet gelukt");
       }
       throw e;
     } finally {
@@ -122,6 +122,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");

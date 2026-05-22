@@ -19,7 +19,7 @@ const Header = () => {
       <Link
         to={"/"}
         className="text-green-500 font-bold text-3xl py-2 px-4 tracking-tight">
-        Webify Shop
+        Album Store
       </Link>
 
       <div className="flex gap-2 items-center">
@@ -30,7 +30,7 @@ const Header = () => {
         <NavLink to={"/library"} className={linkClass}>
           <div className="flex gap-2 items-center">
             <MdOutlineQueueMusic className="text-3xl" />
-            <p>Library</p>
+            <p>Bibliotheek</p>
           </div>
         </NavLink>
 
@@ -43,19 +43,19 @@ const Header = () => {
         <NavLink to={"/cart"} className={linkClass}>
           <div className="flex gap-2 items-center">
             <FaShoppingCart className="text-2xl" />
-            <p>Cart ({count})</p>
+            <p>Winkelmandje ({count})</p>
           </div>
         </NavLink>
 
         {!isAuthenticated ? (
           <NavLink to={"/login"} className={linkClass}>
-            Login
+            Log in
           </NavLink>
         ) : (
           <button
             onClick={logout}
             className="font-semibold text-lg px-4 py-2 rounded-lg text-neutral-50 hover:text-green-500">
-            Logout ({user?.firstName})
+            Log uit ({user?.firstName})
           </button>
         )}
       </div>

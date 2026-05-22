@@ -39,11 +39,11 @@ const StorePage = () => {
       })
        .catch((e: unknown) => {
         if (e instanceof ApiError) {
-          setError(e.body?.message ?? e.message ?? "Failed to load catalog");
+          setError(e.body?.message ?? e.message ?? "Kan catalogus niet laden");
         } else if (e instanceof Error) {
           setError(e.message);
         } else {
-          setError("Failed to load catalog");
+          setError("Kan catalogus niet laden");
         }
       })     .finally(() => setLoading(false));
   }, 400);
@@ -62,7 +62,7 @@ const StorePage = () => {
               setQ(e.target.value);
               setPage(1);
             }}
-            placeholder="Search title or artist..."
+            placeholder="Zoek titel of artiest..."
             className="bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-2 w-full md:w-80"
           />
           <select
@@ -74,7 +74,7 @@ const StorePage = () => {
             }}
             className="bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-2"
           >
-            <option value="">All artists</option>
+            <option value="">Alle artiesten</option>
             {artists.map((a) => (
               <option key={a.id} value={a.id}>
                 {a.name}
@@ -89,22 +89,22 @@ const StorePage = () => {
             disabled={page <= 1}
             className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg disabled:opacity-50"
           >
-            Prev
+            Vorige
           </button>
           <p className="text-neutral-300">
-            Page <span className="font-semibold text-neutral-50">{page}</span> / {totalPages}
+            Pagina <span className="font-semibold text-neutral-50">{page}</span> / {totalPages}
           </p>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page >= totalPages}
             className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg disabled:opacity-50"
           >
-            Next
+            Volgende
           </button>
         </div>
       </div>
 
-      {loading && <p className="text-neutral-400">Loading albums…</p>}
+      {loading && <p className="text-neutral-400">Albums laden…</p>}
       {error && (
         <div className="bg-red-900/40 border border-red-700 p-4 rounded-lg">
           <p className="text-red-200">{error}</p>
@@ -113,7 +113,7 @@ const StorePage = () => {
 
       {!loading && !error && albums.length === 0 && (
         <div className="bg-neutral-800 p-6 rounded-lg">
-          <p className="text-neutral-300">No albums found.</p>
+          <p className="text-neutral-300">Geen albums gevonden.</p>
         </div>
       )}
 

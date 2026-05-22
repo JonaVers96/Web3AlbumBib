@@ -30,10 +30,10 @@ const AdminLayout = () => {
           Albums
         </NavLink>
         <NavLink to={"/admin/artists"} className={linkClass}>
-          Artists
+          Artisten
         </NavLink>
         <NavLink to={"/admin/users"} className={linkClass}>
-          Users
+          Gebruikers
         </NavLink>
       </div>
       <Outlet />

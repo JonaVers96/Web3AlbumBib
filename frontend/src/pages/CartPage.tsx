@@ -29,9 +29,9 @@ const CartPage = () => {
       window.location.href = checkoutUrl;
     } catch (e: unknown) {
       if (e instanceof ApiError) {
-        setError(e.body?.message ?? e.message ?? "Checkout failed");
+        setError(e.body?.message ?? e.message ?? "Het afrekenen is mislukt");
       } else {
-        setError("Checkout failed");
+        setError("Het afrekenen is mislukt");
       }
     } finally {
       setLoading(false);
@@ -74,7 +74,7 @@ const CartPage = () => {
                   onClick={() => remove(a.id)}
                   className="bg-neutral-900 border border-neutral-700 px-3 py-2 rounded-lg hover:border-red-500 hover:text-red-300"
                 >
-                  Remove
+                  Verwijderen
                 </button>
               </div>
             ))}
@@ -87,14 +87,14 @@ const CartPage = () => {
                 onClick={clear}
                 className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg"
               >
-                Clear
+                Winkelmandje legen
               </button>
               <button
                 onClick={checkout}
                 disabled={loading}
                 className="bg-green-600 hover:bg-green-500 text-neutral-900 font-bold px-6 py-3 rounded-lg transition disabled:opacity-50"
               >
-                {loading ? "Redirecting…" : "Checkout (Mollie)"}
+                {loading ? "Omleiding…" : "Checkout (Mollie)"}
               </button>
             </div>
           </div>

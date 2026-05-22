@@ -18,11 +18,11 @@ const load = async () => {
       setItems(res.items);
     } catch (e: unknown) {
       if (e instanceof ApiError) {
-        setError(e.body?.message ?? e.message ?? "Failed to load library");
+        setError(e.body?.message ?? e.message ?? "Kan bibliotheek niet laden");
       } else if (e instanceof Error) {
         setError(e.message);
       } else {
-        setError("Failed to load library");
+        setError("Kan bibliotheek niet laden");
       }
     } finally {
       setLoading(false);
@@ -30,7 +30,7 @@ const load = async () => {
   };
 
   const handleRemove = async (albumId: number) => {
-    if (!window.confirm("Weet je zeker dat je dit album uit je library wilt verwijderen?")) return;
+    if (!window.confirm("Weet je zeker dat je dit album uit je bibliotheek wilt verwijderen?")) return;
     
     setError(null);
     try {
@@ -38,11 +38,11 @@ const load = async () => {
       await load(); 
     } catch (e: unknown) {
       if (e instanceof ApiError) {
-        setError(e.body?.message ?? e.message ?? "Kon album niet verwijderen");
+        setError(e.body?.message ?? e.message ?? "Kan album niet verwijderen");
       } else if (e instanceof Error) {
         setError(e.message);
       } else {
-        setError("Kon album niet verwijderen");
+        setError("Kan album niet verwijderen");
       }
     }
   };
@@ -70,13 +70,13 @@ const load = async () => {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Library</h1>
+        <h1 className="text-3xl font-bold">Bibliotheek</h1>
         <button onClick={load} className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg">
           Refresh
         </button>
       </div>
 
-      {loading && <p className="text-neutral-400">Loading…</p>}
+      {loading && <p className="text-neutral-400">Laden…</p>}
       {error && (
         <div className="bg-red-900/40 border border-red-700 p-4 rounded-lg">
           <p className="text-red-200">{error}</p>
@@ -107,13 +107,13 @@ const load = async () => {
             
             <div className="flex items-center gap-4">
               <Link to={`/albums/${a.id}`} className="text-green-500 underline hover:text-green-400">
-                View
+                Details
               </Link>
               <button 
                 onClick={() => handleRemove(a.id)} 
                 className="text-red-500 underline hover:text-red-400"
               >
-                Remove
+                Verwijderen
               </button>
             </div>
           </div>

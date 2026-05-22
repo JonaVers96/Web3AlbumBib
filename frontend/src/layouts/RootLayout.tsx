@@ -9,7 +9,7 @@ const RootLayout = () => {
         <Outlet />
       </div>
       <footer className="border-t border-neutral-800 p-4 text-sm text-neutral-500 text-center">
-        Webify Shop — demo webshop met Mollie checkout
+        Albums Store 2026. Gemaakt door Jonas Verstraeten als project voor HoGent Web3.
       </footer>
     </div>
   );

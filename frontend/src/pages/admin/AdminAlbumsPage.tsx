@@ -200,7 +200,7 @@ const AdminAlbumsPage = () => {
           <h1 className="text-3xl font-bold">{editing ? "Edit album" : "Create album"}</h1>
           <div className="flex gap-2">
             <button onClick={startCreate} className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg">
-              New
+              Nieuw
             </button>
             <button onClick={doExport} className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg">
               Export CSV
@@ -210,12 +210,12 @@ const AdminAlbumsPage = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col gap-2">
-            <label className="text-sm text-neutral-300">Title</label>
+            <label className="text-sm text-neutral-300">Titel</label>
             <input className="bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-2" {...register("title", { required: true })} />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm text-neutral-300">Artist</label>
+            <label className="text-sm text-neutral-300">Artiest</label>
             <select className="bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-2" {...register("artistId", { valueAsNumber: true, required: true })}>
               {artists.map((a) => (
                 <option key={a.id} value={a.id}>{a.name}</option>
@@ -224,27 +224,27 @@ const AdminAlbumsPage = () => {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm text-neutral-300">Release date</label>
+            <label className="text-sm text-neutral-300">Release datum</label>
             <input type="date" className="bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-2" {...register("dateReleased", { required: true })} />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm text-neutral-300">Price (cents)</label>
+            <label className="text-sm text-neutral-300">Prijs (cents)</label>
             <input type="number" min={0} className="bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-2" {...register("priceCents", { valueAsNumber: true, required: true })} />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm text-neutral-300">Track count</label>
+            <label className="text-sm text-neutral-300">aantal nummers</label>
             <input type="number" className="bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-2" {...register("trackCount", { setValueAs: (v) => v === "" ? null : Number(v) })} />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm text-neutral-300">Length (seconds)</label>
+            <label className="text-sm text-neutral-300">Lengte (seconden)</label>
             <input type="number" className="bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-2" {...register("lengthSeconds", { setValueAs: (v) => v === "" ? null : Number(v) })} />
           </div>
 
           <div className="flex flex-col gap-2 md:col-span-2">
-            <label className="text-sm text-neutral-300">Cover image (JPEG upload)</label>
+            <label className="text-sm text-neutral-300">Cover afbeelding (JPEG upload)</label>
             <div className="flex gap-3 items-center flex-wrap">
               <input
                 type="file"
@@ -252,7 +252,7 @@ const AdminAlbumsPage = () => {
                 onChange={(e) => handleCoverFile(e.target.files?.[0] ?? null)}
                 className="bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-2"
               />
-              {uploading && <p className="text-neutral-400">Uploading…</p>}
+              {uploading && <p className="text-neutral-400">Uploaden…</p>}
               {coverImageUrl && (
                 <div className="flex gap-3 items-center">
                   <img src={resolveImageUrl(coverImageUrl)} alt="cover preview" className="w-16 h-16 rounded-lg object-cover" />
@@ -264,11 +264,11 @@ const AdminAlbumsPage = () => {
 
           <div className="md:col-span-2 flex gap-2">
             <button disabled={isSubmitting} className="bg-green-600 hover:bg-green-500 text-neutral-900 font-bold px-6 py-3 rounded-lg disabled:opacity-50">
-              {isSubmitting ? "Saving…" : "Save"}
+              {isSubmitting ? "Opslaan…" : "Opslaan"}
             </button>
             {editing && (
               <button type="button" onClick={startCreate} className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg">
-                Cancel
+                Annuleren
               </button>
             )}
           </div>
@@ -280,7 +280,7 @@ const AdminAlbumsPage = () => {
           <input
             value={q}
             onChange={(e) => { setQ(e.target.value); setPage(1); }}
-            placeholder="Search albums…"
+            placeholder="Zoek albums…"
             className="bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-2 w-full md:w-80"
           />
           <select
@@ -288,20 +288,20 @@ const AdminAlbumsPage = () => {
             onChange={(e) => { const v = e.target.value; setArtistId(v ? Number(v) : ""); setPage(1); }}
             className="bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-2"
           >
-            <option value="">All artists</option>
+            <option value="">Alle artisten</option>
             {artists.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
           </select>
         </div>
 
         <div className="flex gap-2 items-center">
           <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg disabled:opacity-50">
-            Prev
+            Vorige
           </button>
           <p className="text-neutral-300">
-            Page <span className="font-semibold text-neutral-50">{page}</span> / {totalPages}
+            Pagina <span className="font-semibold text-neutral-50">{page}</span> / {totalPages}
           </p>
           <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg disabled:opacity-50">
-            Next
+            Volgende
           </button>
         </div>
       </div>
@@ -327,10 +327,10 @@ const AdminAlbumsPage = () => {
             </div>
             <p className="font-semibold">{formatPrice(a.priceCents)}</p>
             <button onClick={() => startEdit(a)} className="bg-neutral-900 border border-neutral-700 px-3 py-2 rounded-lg hover:border-green-500">
-              Edit
+              Bewerken
             </button>
             <button onClick={() => doDelete(a.id)} className="bg-neutral-900 border border-neutral-700 px-3 py-2 rounded-lg hover:border-red-500 hover:text-red-300">
-              Delete
+              Verwijderen
             </button>
           </div>
         ))}

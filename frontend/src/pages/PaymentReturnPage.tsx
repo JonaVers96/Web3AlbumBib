@@ -34,9 +34,9 @@ const PaymentReturnPage = () => {
         setPayment(p);
       } catch (e: unknown) {
         if (e instanceof ApiError) {
-          setError(e.body?.message ?? e.message ?? "Failed to load payment");
+          setError(e.body?.message ?? e.message ?? "Kan betaling niet laden");
         } else {
-          setError("Failed to load payment");
+          setError("Kan betaling niet laden");
         }
       } finally {
         setLoading(false);
@@ -46,13 +46,13 @@ const PaymentReturnPage = () => {
     run().catch(() => undefined);
   }, [reference]);
 
-  if (loading) return <p className="text-neutral-400">Loading payment…</p>;
+  if (loading) return <p className="text-neutral-400">Betaling laden…</p>;
   if (error)
     return (
       <div className="bg-red-900/40 border border-red-700 p-4 rounded-lg">
         <p className="text-red-200">{error}</p>
         <Link to="/" className="text-green-500 underline">
-          Back to store
+          Terug naar de Store
         </Link>
       </div>
     );
@@ -68,15 +68,15 @@ const PaymentReturnPage = () => {
 
   return (
     <div className="bg-neutral-800 p-6 rounded-lg flex flex-col gap-4">
-      <h1 className="text-3xl font-bold">Payment</h1>
+      <h1 className="text-3xl font-bold">Betaling</h1>
       <p className="text-neutral-300">
-        Reference: <span className="font-mono">{payment.reference}</span>
+        Referentie: <span className="font-mono">{payment.reference}</span>
       </p>
       <p className={`text-xl font-semibold ${statusColor}`}>
         Status: {payment.status}
       </p>
       <p className="text-neutral-300">
-        Total:{" "}
+        Totaal:{" "}
         <span className="font-semibold">
           {formatPrice(payment.amountCents)}
         </span>
@@ -98,13 +98,13 @@ const PaymentReturnPage = () => {
           to="/library"
           className="bg-green-600 hover:bg-green-500 text-neutral-900 font-bold px-4 py-2 rounded-lg"
         >
-          Go to library
+          Ga naar mijn bibliotheek
         </Link>
         <Link
           to="/"
           className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg"
         >
-          Back to store
+          Terug naar de Store
         </Link>
       </div>
 

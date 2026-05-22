@@ -16,9 +16,9 @@ const AdminUsersPage = () => {
       setItems(res.items);
     } catch (e: unknown) {
       if (e instanceof ApiError) {
-        setError(e.body?.message ?? e.message ?? "Failed to load users");
+        setError(e.body?.message ?? e.message ?? "gebruikers konden niet geladen worden");
       } else {
-        setError("Failed to load users");
+        setError("gebruikers konden niet geladen worden");
       }
     } finally {
       setLoading(false);
@@ -41,9 +41,9 @@ const AdminUsersPage = () => {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Users</h1>
+        <h1 className="text-3xl font-bold">Gebruikers</h1>
         <button onClick={load} className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg">
-          Refresh
+          Herladen
         </button>
       </div>
 
@@ -67,12 +67,12 @@ const AdminUsersPage = () => {
               onChange={(e) => setRole(u.id, e.target.value as Role)}
               className="bg-neutral-900 border border-neutral-700 rounded-lg px-3 py-2"
             >
-              <option value="user">user</option>
-              <option value="admin">admin</option>
+              <option value="user">Gebruiker</option>
+              <option value="admin">Admin</option>
             </select>
 
             <button onClick={() => doDelete(u.id)} className="bg-neutral-900 border border-neutral-700 px-3 py-2 rounded-lg hover:border-red-500 hover:text-red-300">
-              Delete
+              Verwijderen
             </button>
           </div>
         ))}

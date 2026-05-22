@@ -32,7 +32,7 @@ const AlbumCard = ({ album }: { album: Album }) => {
         {album.isOwned ? (
           <span className="text-green-500 font-semibold">Owned</span>
         ) : (
-<button
+          <button
             onClick={() => add(album)}
             disabled={alreadyInCart}
             className={`px-4 py-2 rounded-lg font-medium transition ${
@@ -41,7 +41,7 @@ const AlbumCard = ({ album }: { album: Album }) => {
                 : "bg-blue-600 hover:bg-blue-500 text-white"          
             }`}
           >
-            {alreadyInCart ? "In cart" : "Add"}
+            {alreadyInCart ? "Toegevoegd" : "Toevoegen"}
           </button>
         )}
       </div>

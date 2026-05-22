@@ -34,9 +34,9 @@ const AdminArtistsPage = () => {
       setTotal(res.total);
     } catch (e: unknown) {
       if (e instanceof ApiError) {
-        setError(e.body?.message ?? e.message ?? "Failed to load artists");
+        setError(e.body?.message ?? e.message ?? "artiesten konden niet geladen worden");
       } else {
-        setError("Failed to load artists");
+        setError("artiesten konden niet geladen worden");
       }
     } finally {
       setLoading(false);
@@ -81,7 +81,7 @@ const AdminArtistsPage = () => {
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <h1 className="text-3xl font-bold">{editing ? "Edit artist" : "Create artist"}</h1>
           <button onClick={startCreate} className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg">
-            New
+            Nieuwe artiest
           </button>
         </div>
 
@@ -96,11 +96,11 @@ const AdminArtistsPage = () => {
           </div>
           <div className="md:col-span-2 flex gap-2">
             <button disabled={isSubmitting} className="bg-green-600 hover:bg-green-500 text-neutral-900 font-bold px-6 py-3 rounded-lg disabled:opacity-50">
-              {isSubmitting ? "Saving…" : "Save"}
+              {isSubmitting ? "Opslaan…" : "Opslaan"}
             </button>
             {editing && (
               <button type="button" onClick={startCreate} className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg">
-                Cancel
+                Annuleren
               </button>
             )}
           </div>
@@ -117,19 +117,19 @@ const AdminArtistsPage = () => {
         <input
           value={q}
           onChange={(e) => { setQ(e.target.value); setPage(1); }}
-          placeholder="Search artists…"
+          placeholder="Zoek artisten…"
           className="bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-2 w-full md:w-80"
         />
 
         <div className="flex gap-2 items-center">
           <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg disabled:opacity-50">
-            Prev
+            Vorige
           </button>
           <p className="text-neutral-300">
-            Page <span className="font-semibold text-neutral-50">{page}</span> / {totalPages}
+            Pagina <span className="font-semibold text-neutral-50">{page}</span> / {totalPages}
           </p>
           <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg disabled:opacity-50">
-            Next
+            Volgende
           </button>
         </div>
       </div>
@@ -149,10 +149,10 @@ const AdminArtistsPage = () => {
               <p className="text-sm text-neutral-400">{a.genre ?? "—"}</p>
             </div>
             <button onClick={() => startEdit(a)} className="bg-neutral-900 border border-neutral-700 px-3 py-2 rounded-lg hover:border-green-500">
-              Edit
+              Bewerken
             </button>
             <button onClick={() => doDelete(a.id)} className="bg-neutral-900 border border-neutral-700 px-3 py-2 rounded-lg hover:border-red-500 hover:text-red-300">
-              Delete
+              Verwijderen
             </button>
           </div>
         ))}
