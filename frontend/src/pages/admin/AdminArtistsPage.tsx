@@ -79,7 +79,7 @@ const AdminArtistsPage = () => {
     <div className="flex flex-col gap-6">
       <div className="bg-neutral-800 p-6 rounded-lg">
         <div className="flex items-center justify-between gap-4 flex-wrap">
-          <h1 className="text-3xl font-bold">{editing ? "Edit artist" : "Create artist"}</h1>
+          <h1 className="text-3xl font-bold">{editing ? "Bewerk artiest" : "Nieuwe artiest"}</h1>
           <button onClick={startCreate} className="bg-neutral-900 border border-neutral-700 px-4 py-2 rounded-lg">
             Nieuwe artiest
           </button>
