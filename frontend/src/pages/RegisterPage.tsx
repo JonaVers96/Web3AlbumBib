@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../contexts/AuthContext";
+import { ApiError } from "../api/client";
 
 type FormValues = {
   firstName: string;
@@ -24,8 +25,12 @@ const RegisterPage = () => {
     try {
       await doRegister(values);
       navigate(next);
-    } catch (e: any) {
-      setLocalError(e?.body?.message ?? e?.message ?? "Register failed");
+    } catch (e: unknown) {
+      if (e instanceof ApiError) {
+        setLocalError(e.body?.message ?? e.message ?? "Register failed");
+      } else {
+        setLocalError("Register failed");
+      }
     }
   };
 

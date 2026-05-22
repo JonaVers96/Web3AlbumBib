@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import type { Artist, ArtistDetail } from "../../types/artist";
 import * as artistApi from "../../api/artists";
+import { ApiError } from "../../api/client";
 
 type ArtistForm = { name: string; genre: string };
 
@@ -24,21 +25,25 @@ const AdminArtistsPage = () => {
 
   const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total]);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const res = await artistApi.fetchArtists({ page, pageSize, q: q.trim() || undefined });
       setArtists(res.items);
       setTotal(res.total);
-    } catch (e: any) {
-      setError(e?.body?.message ?? e?.message ?? "Failed to load artists");
+    } catch (e: unknown) {
+      if (e instanceof ApiError) {
+        setError(e.body?.message ?? e.message ?? "Failed to load artists");
+      } else {
+        setError("Failed to load artists");
+      }
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, pageSize, q]);
 
-  useEffect(() => { load().catch(() => undefined); }, [page, q]);
+  useEffect(() => { load().catch(() => undefined); }, [load]);
 
   const startCreate = () => {
     setEditing(null);

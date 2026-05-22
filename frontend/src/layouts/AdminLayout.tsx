@@ -1,5 +1,10 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+  const linkClass =
+    ({ isActive }: { isActive: boolean }) =>
+      `font-semibold px-4 py-2 rounded-lg transition-colors ${
+        isActive ? "bg-green-600 text-neutral-900" : "bg-neutral-800 text-neutral-50 hover:bg-neutral-700"
+      }`;
 
 const AdminLayout = () => {
   const { isAdmin, loading } = useAuth();
@@ -14,12 +19,6 @@ const AdminLayout = () => {
       </div>
     );
   }
-
-  const linkClass =
-    ({ isActive }: { isActive: boolean }) =>
-      `font-semibold px-4 py-2 rounded-lg ${
-        isActive ? "bg-green-600 text-neutral-900" : "bg-neutral-800 text-neutral-50"
-      }`;
 
   return (
     <div className="flex flex-col gap-6">

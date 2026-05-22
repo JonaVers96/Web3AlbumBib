@@ -4,6 +4,7 @@ import { formatPrice, resolveImageUrl } from "../api/client";
 import { useAuth } from "../contexts/AuthContext";
 import { useCart } from "../contexts/CartContext";
 import * as paymentApi from "../api/payments";
+import { ApiError } from "../api/client";
 
 const CartPage = () => {
   const { isAuthenticated } = useAuth();
@@ -26,8 +27,12 @@ const CartPage = () => {
     try {
       const { checkoutUrl } = await paymentApi.createCheckout(albumIds);
       window.location.href = checkoutUrl;
-    } catch (e: any) {
-      setError(e?.body?.message ?? e?.message ?? "Checkout failed");
+    } catch (e: unknown) {
+      if (e instanceof ApiError) {
+        setError(e.body?.message ?? e.message ?? "Checkout failed");
+      } else {
+        setError("Checkout failed");
+      }
     } finally {
       setLoading(false);
     }

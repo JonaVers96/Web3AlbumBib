@@ -4,6 +4,7 @@ import type { Album } from "../types/album";
 import * as albumApi from "../api/albums";
 import { formatPrice, resolveImageUrl } from "../api/client";
 import { useCart } from "../contexts/CartContext";
+import { ApiError } from "../api/client";
 
 const AlbumDetailPage = () => {
   const { id } = useParams();
@@ -22,7 +23,15 @@ const AlbumDetailPage = () => {
     albumApi
       .fetchCatalogAlbumById(albumId)
       .then(setAlbum)
-      .catch((e: any) => setError(e?.body?.message ?? e?.message ?? "Failed to load album"))
+   .catch((e: unknown) => { 
+        if (e instanceof ApiError) {
+          setError(e.body?.message ?? e.message ?? "Failed to load album");
+        } else if (e instanceof Error) {
+          setError(e.message);
+        } else {
+          setError("Failed to load album");
+        }
+      })
       .finally(() => setLoading(false));
   }, [albumId]);
 

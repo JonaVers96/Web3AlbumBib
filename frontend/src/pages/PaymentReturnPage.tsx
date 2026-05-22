@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import * as paymentApi from "../api/payments";
-import { formatPrice } from "../api/client";
+import { formatPrice, ApiError } from "../api/client";
 import type { Payment } from "../types/payment";
 
 const PaymentReturnPage = () => {
@@ -23,7 +23,6 @@ const PaymentReturnPage = () => {
       setLoading(true);
       setError(null);
       try {
-        // try sync (safe if already final)
         const synced = await paymentApi
           .syncPayment(reference)
           .catch(() => null);
@@ -34,29 +33,11 @@ const PaymentReturnPage = () => {
         const p = await paymentApi.getPayment(reference);
         setPayment(p);
       } catch (e: unknown) {
-        let message = "Failed to load payment";
-        if (typeof e === "object" && e !== null) {
-          if ("body" in e) {
-            const body = (e as { body?: unknown }).body;
-            if (
-              typeof body === "object" &&
-              body !== null &&
-              "message" in body
-            ) {
-              const m = (body as { message?: unknown }).message;
-              if (typeof m === "string") {
-                message = m;
-              }
-            }
-          }
-          if (message === "Failed to load payment" && "message" in e) {
-            const m = (e as { message?: unknown }).message;
-            if (typeof m === "string") {
-              message = m;
-            }
-          }
+        if (e instanceof ApiError) {
+          setError(e.body?.message ?? e.message ?? "Failed to load payment");
+        } else {
+          setError("Failed to load payment");
         }
-        setError(message);
       } finally {
         setLoading(false);
       }

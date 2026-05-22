@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { PublicUser, Role } from "../../types/user";
 import * as usersApi from "../../api/users";
+import { ApiError } from "../../api/client";
 
 const AdminUsersPage = () => {
   const [items, setItems] = useState<PublicUser[]>([]);
@@ -13,8 +14,12 @@ const AdminUsersPage = () => {
     try {
       const res = await usersApi.fetchUsers();
       setItems(res.items);
-    } catch (e: any) {
-      setError(e?.body?.message ?? e?.message ?? "Failed to load users");
+    } catch (e: unknown) {
+      if (e instanceof ApiError) {
+        setError(e.body?.message ?? e.message ?? "Failed to load users");
+      } else {
+        setError("Failed to load users");
+      }
     } finally {
       setLoading(false);
     }

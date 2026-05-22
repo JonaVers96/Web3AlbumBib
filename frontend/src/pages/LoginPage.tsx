@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../contexts/AuthContext";
+import { ApiError } from "../api/client";
 
 type FormValues = { email: string; password: string };
 
@@ -19,8 +20,12 @@ const LoginPage = () => {
     try {
       await login(values.email, values.password);
       navigate(next);
-    } catch (e: any) {
-      setLocalError(e?.body?.message ?? e?.message ?? "Login failed");
+    } catch (e: unknown) {
+      if (e instanceof ApiError) {
+        setLocalError(e.body?.message ?? e.message ?? "Login failed");
+      } else {
+        setLocalError("Login failed");
+      }
     }
   };
 
