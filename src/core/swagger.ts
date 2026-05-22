@@ -22,7 +22,6 @@ export const buildOpenApiSpec = () => {
         },
       },
       schemas: {
-        // --- Reusable primitives ---
         ErrorResponse: {
           type: 'object',
           properties: {
@@ -41,7 +40,6 @@ export const buildOpenApiSpec = () => {
           },
         },
 
-        // --- Domain models ---
         UserPublic: {
           type: 'object',
           properties: {
@@ -69,12 +67,13 @@ export const buildOpenApiSpec = () => {
             dateReleased: { type: 'string', format: 'date-time' },
             trackCount: { type: 'integer', nullable: true },
             lengthSeconds: { type: 'integer', nullable: true },
+            priceCents: { type: 'integer' },
+            coverImageUrl: { type: 'string', nullable: true },
             artist: { $ref: '#/components/schemas/Artist' },
           },
-          required: ['id', 'title', 'dateReleased', 'artist'],
+          required: ['id', 'title', 'dateReleased','priceCents', 'artist'],
         },
 
-        // --- Paginated wrappers (geen generics in OAS, dus apart) ---
         PaginatedUsers: {
           type: 'object',
           properties: {
@@ -103,7 +102,6 @@ export const buildOpenApiSpec = () => {
           },
         },
 
-        // --- Request bodies ---
         CreateUserBody: {
           type: 'object',
           properties: {
@@ -146,6 +144,8 @@ export const buildOpenApiSpec = () => {
             artistId: { type: 'integer' },
             trackCount: { type: 'integer' },
             lengthSeconds: { type: 'integer' },
+            priceCents: { type: 'integer' },
+            coverImageUrl: { type: 'string', nullable: true },
           },
           required: ['title', 'dateReleased', 'artistId'],
         },
@@ -157,6 +157,8 @@ export const buildOpenApiSpec = () => {
             artistId: { type: 'integer' },
             trackCount: { type: 'integer' },
             lengthSeconds: { type: 'integer' },
+            priceCents: { type: 'integer' },
+            coverImageUrl: { type: 'string', nullable: true },
           },
         },
       },
@@ -165,7 +167,6 @@ export const buildOpenApiSpec = () => {
 
   const options = {
     definition,
-    // alle route-bestanden met @openapi JSDoc
     apis: ['src/rest/**/*.ts', 'src/createServer.ts'],
   };
 
@@ -180,7 +181,6 @@ export const registerSwagger = (app: any, router: Router) => {
     ctx.body = spec;
   });
 
-  // Swagger UI
   app.use(
     koaSwagger({
       routePrefix: '/api/docs',

@@ -1,7 +1,6 @@
 import config from 'config';
 import bodyParser from 'koa-bodyparser';
 import koaCors from '@koa/cors';
-import cors from '@koa/cors';
 import helmet from 'koa-helmet';
 import { koaSwagger } from 'koa2-swagger-ui';
 import swaggerJsdoc from 'swagger-jsdoc';
@@ -15,53 +14,28 @@ const CORS_ORIGINS = config.get<string[]>('cors.origins');
 const CORS_MAX_AGE = config.get<number>('cors.maxAge');
 const isDevelopment = NODE_ENV === 'development';
 
-const allowCorsMiddleware = cors({
-  origin: (requestContext) => {
-    const requestOriginHeader = requestContext.request.header.origin;
-
-    // Requests zonder Origin (bv. curl, Postman) mogen ook.
-    if (!requestOriginHeader) {
-      return '*';
-    }
-
-    // In development willen we alle localhost poorten toelaten.
-    const isLocalhostOrigin =
-      requestOriginHeader.startsWith('http://localhost:') ||
-      requestOriginHeader.startsWith('http://127.0.0.1:');
-
-    if (isLocalhostOrigin) {
-      return requestOriginHeader;
-    }
-
-    // In productie kan je hier stricter zijn.
-    return requestOriginHeader;
-  },
-  allowHeaders: ['Content-Type', 'Authorization'],
-  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-});
-
 export default function installMiddlewares(app: KoaApplication) {
-  app.use(allowCorsMiddleware);
   app.use(
     koaCors({
       origin: (ctx) => {
         const requestOrigin = ctx.request.header.origin;
 
-        // Geen Origin header (bv. curl / swagger / server-to-server):
-        // laat dit toe en stuur '*' terug.
-        if (!requestOrigin) {
-          return '*';
-        }
+        if (!requestOrigin) return '*';
 
-        // Browser requests: enkel toestaan als de origin in de allowlist zit.
         if (CORS_ORIGINS.includes(requestOrigin)) {
           return requestOrigin;
         }
+        
+        const isLocalhostOrigin = 
+        requestOrigin.startsWith('http://localhost:') || requestOrigin.startsWith('http://127.0.0.1:');
+        if (isDevelopment && isLocalhostOrigin) {
+          return requestOrigin;
+        }
 
-        // Onbekende origin: geef een geldige waarde terug zodat de CORS middleware niet crasht.
         return CORS_ORIGINS[0] || requestOrigin;
       },
       allowHeaders: ['Accept', 'Content-Type', 'Authorization'],
+      allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       maxAge: CORS_MAX_AGE,
     }),
   );

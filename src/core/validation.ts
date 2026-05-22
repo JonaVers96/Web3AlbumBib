@@ -4,10 +4,10 @@ import type { KoaContext } from '../types/koa';
 import type { Next } from 'koa';
 
 const JOI_OPTIONS: Joi.ValidationOptions = {
-  abortEarly: true, // stop when first error occured
-  allowUnknown: false, // disallow unknown fields
-  convert: true, // convert values to their types (number, Date, ...)
-  presence: 'required', // default require all fields
+  abortEarly: true, 
+  allowUnknown: false, 
+  convert: true, 
+  presence: 'required', 
 };
 
 type RequestValidationSchemeInput = Partial<

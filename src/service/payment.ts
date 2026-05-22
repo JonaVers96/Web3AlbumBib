@@ -40,7 +40,6 @@ export const createCheckout = async (userId: number, albumIds: number[]) => {
     throw ServiceError.validationFailed('You must provide at least one album id');
   }
 
-  // Remove duplicates
   const uniqueIds = Array.from(new Set(albumIds.map((id) => Number(id)))).filter((id) => Number.isFinite(id));
   if (uniqueIds.length === 0) {
     throw ServiceError.validationFailed('Invalid album ids');
@@ -67,7 +66,6 @@ export const createCheckout = async (userId: number, albumIds: number[]) => {
 
   const reference = crypto.randomUUID().replace(/-/g, '').slice(0, 32);
 
-  // Create payment in DB first
   const payment = await prisma.payment.create({
     data: {
       reference,
@@ -80,7 +78,6 @@ export const createCheckout = async (userId: number, albumIds: number[]) => {
 
   const mollieClient = getMollieClient();
   if (!mollieClient) {
-    // Dev fallback (no Mollie key): instantly mark as paid and grant albums.
     const fakeCheckoutUrl = `${FRONTEND_BASE_URL}/payment/return?reference=${reference}`;
 
     await prisma.payment.update({
@@ -125,7 +122,6 @@ export const createCheckout = async (userId: number, albumIds: number[]) => {
 
     return { reference, checkoutUrl };
   } catch (error) {
-    // If Mollie fails, remove DB payment to avoid dangling records
     await prisma.payment.delete({ where: { id: payment.id } }).catch(() => undefined);
     throw handleDBError(error);
   }
@@ -207,7 +203,6 @@ export const getAll = async (query: any, requesterUserId: number, isAdmin: boole
   const page = Math.max(1, Number(query.page ?? 1));
   const pageSize = Math.min(100, Math.max(1, Number(query.pageSize ?? 25)));
 
-  // Als het geen admin is, filter dan op de userId van de requester
   const where: any = {};
   if (!isAdmin) {
     where.userId = requesterUserId;
@@ -217,7 +212,7 @@ export const getAll = async (query: any, requesterUserId: number, isAdmin: boole
     prisma.payment.count({ where }),
     prisma.payment.findMany({
       where,
-      orderBy: { createdAt: 'desc' }, // Meest recente bestellingen eerst
+      orderBy: { createdAt: 'desc' }, 
       skip: (page - 1) * pageSize,
       take: pageSize,
     }),

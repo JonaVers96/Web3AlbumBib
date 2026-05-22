@@ -45,8 +45,6 @@ const handleDBError = (error: any) => {
         );
     }
   }
-
-  // Rethrow error because we don't know what happened
   throw error;
 };
 

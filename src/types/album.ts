@@ -3,7 +3,7 @@ import type { Artist } from './artist';
 
 export interface Album extends Entity {
   title: string;
-  dateReleased: string; // ISO string
+  dateReleased: string;
   lengthSeconds: number | null;
   trackCount: number | null;
   priceCents: number;

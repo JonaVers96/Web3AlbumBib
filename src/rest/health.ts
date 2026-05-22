@@ -1,4 +1,3 @@
-// src/rest/health.ts
 import Router from '@koa/router';
 import * as healthService from '../service/health';
 import type { AlbumAppContext, AlbumAppState } from '../types/koa';
@@ -8,7 +7,6 @@ import validate from '../core/validation';
 import config from 'config';
 
 const withCommonHeaders = (ctx: KoaContext) => {
-  // probeer de versie header te zetten als die beschikbaar is
   try {
     const v = healthService.getVersion?.();
     if (v?.version) ctx.set('X-API-Version', String(v.version));
@@ -89,7 +87,7 @@ const rejectUnknownQuery = (ctx: KoaContext) => {
  *         $ref: '#/components/responses/400BadRequest'
  */
 const ping = async (ctx: KoaContext<PingResponse>) => {
-  if (rejectUnknownQuery(ctx)) return;          // ⬅️ nieuw
+  if (rejectUnknownQuery(ctx)) return;
   const start = performance.now();
   try {
     ctx.status = 200;
@@ -119,17 +117,15 @@ ping.validationScheme = null;
  */
 
 const getVersion = async (ctx: KoaContext<VersionResponse>) => {
-  if (rejectUnknownQuery(ctx)) return;          // ⬅️ nieuw
+  if (rejectUnknownQuery(ctx)) return;
   const start = performance.now();
   try {
     const v = healthService.getVersion();
 
-    // De tests verwachten 'testing'. We lezen die uit config, en vallen anders terug op NODE_ENV mapping.
     const envFromConfig = ((): string => {
       try {
         return config.get<string>('env');
       } catch {
-        // fallback: map jest's NODE_ENV 'test' → 'testing'
         const nodeEnv = process.env.NODE_ENV ?? 'development';
         return nodeEnv === 'test' ? 'testing' : nodeEnv;
       }
@@ -191,7 +187,6 @@ getStatus.validationScheme = null;
 export default function installHealthRoutes(parent: KoaRouter) {
   const router = new Router<AlbumAppState, AlbumAppContext>({ prefix: '/health' });
 
-  // gebruik validate alleen als er een schema is (jouw validate kan null aan, maar dit is explicieter)
   const maybeValidate = (schema: unknown) => (schema ? validate(schema) : async (_ctx: any, next: any) => next());
 
   router.get('/ping', maybeValidate(ping.validationScheme), ping);

@@ -23,7 +23,6 @@ export interface Server {
 export default async function createServer(): Promise<Server> {
   const app = new Koa<AlbumAppState, AlbumAppContext>();
 
-  // Static uploads (album covers, ...)
   const uploadRoot = path.resolve(process.cwd(), 'uploads');
   const coversDir = path.join(uploadRoot, 'covers');
   fs.mkdirSync(coversDir, { recursive: true });

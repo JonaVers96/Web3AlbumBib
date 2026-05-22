@@ -3,7 +3,7 @@
 Deze repo is uitgebreid van een **backend-only** project naar een **volledige webshop (backend + frontend)**.
 
 ## 1) Frontend toegevoegd (zelfde repo)
-- Nieuwe map: `frontend/` (React + Vite + TypeScript) in Webify-stijl.
+- Nieuwe map: `frontend/` (React + Vite + TypeScript) in Webify-stijl met Tailwind CSS.
 - React Router routes:
   - `/` store (publiek)
   - `/albums/:id` album detail (publiek)
@@ -14,7 +14,7 @@ Deze repo is uitgebreid van een **backend-only** project naar een **volledige we
   - `/admin` (admin dashboard) met subpagina's voor albums, artists en users
 - State management via React Context:
   - `AuthContext` (JWT login/register + current user)
-  - `CartContext` (winkelmand in localStorage)
+  - `CartContext` (winkelmand met realtime `isInCart` status-controle)
 
 ## 2) Backend uitgebreid tot webshop
 - Publieke catalog endpoints:
@@ -22,7 +22,7 @@ Deze repo is uitgebreid van een **backend-only** project naar een **volledige we
   - `GET /api/albums/catalog/:id`
 - Library endpoints voor ingelogde users:
   - `GET /api/albums`
-  - `DELETE /api/albums/me/:id`
+  - `DELETE /api/albums/:id`
 - Admin endpoints:
   - CRUD albums en artists
   - `GET /api/albums/admin/export` (CSV export)
@@ -43,5 +43,6 @@ Deze repo is uitgebreid van een **backend-only** project naar een **volledige we
 - `.env.example` toegevoegd en gecorrigeerd naar MySQL + shadow DB.
 - `docker-compose.yml` toegevoegd om MySQL snel te starten.
 
-## 6) Kleine betrouwbaarheid-fix
-- CORS origin handling robuuster gemaakt: requests zonder `Origin` header (bv. swagger/curl) crashen niet.
+## 6) CORS & Middleware stabiliteit-fix
+- CORS-afhandeling volledig gestroomlijnd
+- Requests zonder `Origin` header (bv. swagger/curl) crashen de server niet meer.
